@@ -7,9 +7,11 @@ let port = 8080;
 app.use(express.json());
 app.use(cors());
 
-import chat from "./routes/chat.js";
+import threadRouter from "./routes/thread.js";
+import userRouter from "./routes/user.js";
 
-app.use("/",chat);
+app.use("/",threadRouter);
+app.use("/",userRouter);
 
 app.listen(port,()=>{
   console.log("server start");

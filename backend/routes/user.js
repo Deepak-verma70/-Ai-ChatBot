@@ -1,17 +1,16 @@
 
 
 import express from "express";
-import Thread from "../models/user.js";
+import {signup,login,getUserProfile,updateUserProfile,deleteUserProfile} from "../controller/usercont.js";
 
 let userRouter = express.Router();
 
 
-userRouter.get("/allUsers", userController.getAllUsers);
-userRouter.post("/signup", userController.signup);
-userRouter.post("/login", userController.login);
-userRouter.get("/userProfile/:id", userController.getUserProfile);
-userRouter.put("/updateProfile/:id", userController.updateUserProfile);
-userRouter.delete("/deleteProfile/:id", userController.deleteUserProfile);
+userRouter.post("/signup", signup);
+userRouter.post("/login", login);
+userRouter.get("/userProfile/:id", getUserProfile);
+userRouter.put("/updateProfile/:id", updateUserProfile);
+userRouter.delete("/deleteProfile/:id", deleteUserProfile);
 
-module.exports = userRouter;
+export default userRouter;
 
