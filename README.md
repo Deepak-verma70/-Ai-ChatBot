@@ -97,7 +97,7 @@ npm install
 Create a `.env` file inside the backend folder:
 
 ```env
-PORT=5000
+PORT=8080
 MONGO_URI=your_mongodb_connection_string
 AI_API_KEY=your_ai_api_key
 JWT_SECRET=your_jwt_secret
@@ -154,20 +154,6 @@ The application uses MongoDB to store application data such as:
 * Users
 * Conversations
 * Messages
-* Chat history
-
-## 📌 API Structure
-
-Example API endpoints:
-
-```text
-POST   /api/auth/register
-POST   /api/auth/login
-
-POST   /api/chat
-GET    /api/chat/history
-DELETE /api/chat/:id
-```
 
 ## 🔮 Future Improvements
 
