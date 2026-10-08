@@ -1,7 +1,7 @@
 
 import "dotenv/config";
 
-const OpenAIApiResponse = async (message) =>{
+const getOpenAiAPIResponse = async (message) =>{
     let option = {
    method:"POST",
    headers:{
@@ -19,11 +19,11 @@ const OpenAIApiResponse = async (message) =>{
     let response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions",option);
     const data = await response.json();
   
-    return data.steps[1].content;
+    return data.steps[1].content[0].text;
   }catch(err){
     console.log(err.message);
   }
 
 }
 
-export default OpenAIApiResponse;
+export default getOpenAiAPIResponse;

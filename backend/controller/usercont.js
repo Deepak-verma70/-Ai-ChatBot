@@ -1,9 +1,8 @@
 
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import dotenv from "dotenv/config";
-import mongoose from "mongoose";
-import express from "express";
+
+
 import User from "../models/user.js";
 
 const signup = async(req,res) => {
@@ -27,6 +26,13 @@ const signup = async(req,res) => {
         let result = await newUser.save();
         
        const token = jwt.sign({id:result._id},process.env.JWT_KEY, {expiresIn:"1h"});
+
+       res.cookie("accesstoken",token,{
+        httpOnly:true,
+        secure:process.env.NODE_ENV==="production",
+        sameSite:"strict",
+        maxAge:3*60*60*1000
+       });
 
         res.status(201).json({
   success: true,
@@ -64,7 +70,16 @@ const login = async(req,res) => {
         }
 
         const token = jwt.sign({id:user._id},process.env.JWT_KEY,{expiresIn:"1h"});
-        res.json({token,userId:user._id}); 
+         res.cookie("accesstoken",token,{
+        httpOnly:true,
+        secure:process.env.NODE_ENV==="production",
+        sameSite:"strict",
+        maxAge:3*60*60*1000
+       });
+
+        res.json({success:true,message:"user login successfully"}); 
+
+
     }
     catch(err){
         console.log("error during login:",err.message);
@@ -137,8 +152,6 @@ const deleteUserProfile = async(req,res)=> {
         res.status(500).send("server error");
     } 
 } 
-
-
 
 
 

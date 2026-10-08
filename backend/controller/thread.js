@@ -1,15 +1,14 @@
 
-import dotenv from "dotenv/config";
-import mongoose from "mongoose";
-import express from "express";
+
 import Thread from "../models/thread.js";
+import getOpenAiAPIResponse from "../utils/openai.js";
 
 //Get all threads
 const allThread = async(req, res) => {
     try {
         const threads = await Thread.find({}).sort({updatedAt: -1});
         //descending order of updatedAt...most recent data on top
-        res.json(threads);
+        res.status(200).json({success:true,data:threads});
     } catch(err) {
         console.log(err);
         res.status(500).json({error: "Failed to fetch threads"});
@@ -26,7 +25,7 @@ const threadById = async(req, res) => {
             res.status(404).json({error: "Thread not found"});
         }
 
-        res.json(thread.messages);
+        res.status(200).json({success:true,data:thread.messages});
     } catch(err) {
         console.log(err);
         res.status(500).json({error: "Failed to fetch chat"});
@@ -43,7 +42,7 @@ const deletethread = async (req, res) => {
             res.status(404).json({error: "Thread not found"});
         }
 
-        res.status(200).json({success : "Thread deleted successfully"});
+        res.status(200).json({success :true,messages: "Thread deleted successfully"});
 
     } catch(err) {
         console.log(err);
@@ -51,7 +50,7 @@ const deletethread = async (req, res) => {
     }
 };
 const chat= async(req, res) => {
-    const {threadId, message} = req.body;
+    const {threadId, message,UserId} = req.body;
 
     if(!threadId || !message) {
         res.status(400).json({error: "missing required fields"});
@@ -63,6 +62,9 @@ const chat= async(req, res) => {
         if(!thread) {
             //create a new thread in Db
             thread = new Thread({
+
+
+                userId:UserId,
                 threadId,
                 title: message,
                 messages: [{role: "user", content: message}]
@@ -71,13 +73,13 @@ const chat= async(req, res) => {
             thread.messages.push({role: "user", content: message});
         }
 
-        const assistantReply = await getOpenAIAPIResponse(message);
+        const assistantReply = await getOpenAiAPIResponse(message);
 
         thread.messages.push({role: "assistant", content: assistantReply});
         thread.updatedAt = new Date();
 
         await thread.save();
-        res.json({reply: assistantReply});
+        res.json({success:true,reply: assistantReply});
     } catch(err) {
         console.log(err);
         res.status(500).json({error: "something went wrong"});
