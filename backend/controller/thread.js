@@ -50,7 +50,7 @@ const deletethread = async (req, res) => {
     }
 };
 const chat= async(req, res) => {
-    const {threadId, message,UserId} = req.body;
+    const {threadId, message} = req.body;
 
     if(!threadId || !message) {
         res.status(400).json({error: "missing required fields"});
@@ -62,9 +62,7 @@ const chat= async(req, res) => {
         if(!thread) {
             //create a new thread in Db
             thread = new Thread({
-
-
-                userId:UserId,
+                
                 threadId,
                 title: message,
                 messages: [{role: "user", content: message}]
@@ -78,7 +76,9 @@ const chat= async(req, res) => {
         thread.messages.push({role: "assistant", content: assistantReply});
         thread.updatedAt = new Date();
 
+
         await thread.save();
+
         res.json({success:true,reply: assistantReply});
     } catch(err) {
         console.log(err);
